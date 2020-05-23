@@ -18,12 +18,6 @@ def sendDataToKafkaServer():
     topic = "test"
     producer = KafkaProducer(bootstrap_servers= host + ":" + port)
     
-    # fr = fileinput.input(data_path)
-    # for line in fr:
-    #     print(bytes(line, 'utf-8'))
-    #     producer.send(topic, bytes(line, 'utf-8'))
-    # fr.close()
-
     fr = open(data_path, 'r')
     data = fr.read()
     all_batch = data.split("end\n")
