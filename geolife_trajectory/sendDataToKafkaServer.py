@@ -28,9 +28,10 @@ def sendDataToKafkaServer():
     data = fr.read()
     all_batch = data.split("end\n")
     for batch in all_batch:
-        producer.send(topic, bytes(batch, 'utf-8'))
-        print(batch)
-        time.sleep(5)
+        if str(batch).strip() != "":     
+            producer.send(topic, bytes(batch))
+            print(batch)
+            time.sleep(5)
     fr.close()
 
 

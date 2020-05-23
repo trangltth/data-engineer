@@ -51,15 +51,14 @@ def storedToRedis(lable_RDDs):
     if not lable_RDDs.isEmpty():
         try:
             spark = SparkSession.builder.appName("storing data to Redis").config("spark.redis.host", "localhost").config("spark.redis.port","6379").getOrCreate()
-            _schema = ["id", "content"]
-            
-            df_location = spark.createDataFrame(lable_RDDs, schema=_schema)        
+            _schema = ["id","content"]
+            df_location = spark.createDataFrame(lable_RDDs, schema=_schema)
+            df_location = df_location.withColumn("id", df_location["content"]["user_id"])     
             df_location.show()
             df_location.write.format("org.apache.spark.sql.redis").option("table", "lables").option("key.column", "id").save(mode="append")
         except Exception as ERROR:
             logging.error(ERROR)
     
-
 if __name__ == "__main__":
     
     sc = SparkContext(appName="Transform Labels Data")
@@ -72,7 +71,9 @@ if __name__ == "__main__":
     
     lables_dict.foreachRDD(storedToRedis)
 
-    lables_dict.pprint()
+    # lables_dict.pprint()
 
     ssc.start()
     ssc.awaitTermination()
+
+    

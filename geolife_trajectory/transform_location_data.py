@@ -12,10 +12,15 @@ def get_start_end_location(location_RDDs):
     max = [-1, temp_date]
     min = [-1, temp_date]
     list_day = []
+    user_id = "0"
+    time_period = "0"
     for i in range(len(location_RDDs)):
         data = location_RDDs[i].split(",")
-        current_time = str(data[-1]).strip()        
-        current_date = str(data[len(data) - 2]).strip()
+        if len(data) > 1:
+            user_id = data[0]
+            time_period = data[1]
+            current_time = str(data[-1]).strip()        
+            current_date = str(data[len(data) - 2]).strip()
         if not ((current_time == "") | (current_date == "")):
             # current_time = "00:00:00" if (current_time == "") else current_time
             # current_date = "1899-01-01" if (current_date == "") else current_date
@@ -32,7 +37,10 @@ def get_start_end_location(location_RDDs):
     location_end = location_RDDs[max[0]]
     distance = getDistance(location_start, location_end)
 
-    information = {"duration": str(duration),
+    information = { "id": user_id + "-" + time_period,
+                    "user_id": user_id,
+                    "time_period": time_period,
+                    "duration": str(duration),
                     "location_start": location_start,
                     "location_end": location_end,
                     "distance": str(distance)}
@@ -54,9 +62,9 @@ def getDistance(location_start, location_end):
 def storeToRedis(rdd):
     if not rdd.isEmpty():
         spark = SparkSession.builder.appName("Geolife Trajectory").config("spark.redis.host", "localhost").config("spark.redis.port","6379").getOrCreate()
-        schema = ["id", "content"]
-        df_data = spark.createDataFrame(rdd, schema)
-        df_data.write.format("org.apache.spark.sql.redis").option("table","locations").save(mode="append")
+        df_data = spark.createDataFrame(rdd)
+        df_data.show()
+        df_data.write.format("org.apache.spark.sql.redis").option("table", "locations").option("key.column", "id").save(mode="append")
 
 if __name__ == "__main__":
 

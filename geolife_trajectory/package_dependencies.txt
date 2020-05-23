@@ -1,0 +1,12 @@
+Java dependencies:
+    - org.apache.spark:spark-streaming_2.12:2:4:5
+    - org.apache.spark:spark-core_2.12:2:4:5
+    - org.apache.spark:spark-streaming-kafka-0-8_2.11:2.4.5
+    - com.redislabs:spark-redis:2.4.0
+
+Java running:
+- spark-submit --packages org.apache.spark:spark-streaming_2.12:2.4.5\
+                            ,org.apache.spark:spark-core_2.12:2.4.5\
+                            ,org.apache.spark:spark-streaming-kafka-0-8_2.11:2.4.5\
+                            ,com.redislabs:spark-redis:2.4.0\
+                [running path]

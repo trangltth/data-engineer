@@ -27,8 +27,8 @@ def mergeFile():
 
     for start_range_user in range(start_folder, end_folder + 1, step):
         end_range_user = start_range_user + (contain_num - 1)
-        # mergeLocationData(start_range_user, end_range_user, datadir, output)
-        mergeLabelDataFile(start_range_user, end_range_user, datadir, output)
+        mergeLocationData(start_range_user, end_range_user, datadir, output)
+        # mergeLabelDataFile(start_range_user, end_range_user, datadir, output)
 
 def mergeLocationData(start_range_user, end_range_user, datadir, output):
     combine_trajectory = output + '/' + str(start_range_user).zfill(3) + '-' + str(end_range_user).zfill(3)
@@ -45,7 +45,8 @@ def mergeLocationData(start_range_user, end_range_user, datadir, output):
                         # Before the first line has been read, returns 0
                         # skip 6 useless rows
                         if fr.lineno() > 6:
-                            w.write(folder_num + "," + line)
+                            file_name = _file.split(".")[0]
+                            w.write(folder_num + "," + file_name + "," + line)
                     w.write("end\n")
                     fr.close()
     w.close()
@@ -62,6 +63,7 @@ def mergeLabelDataFile(start_range_user, end_range_user, datadir, output):
                 if fr.lineno() > 1:
                     line = line.replace("\t", ",")
                     fw.write(str(folder).zfill(3) + ',' + line)
+            fw.write("end\n")
             fr.close()
         fw.close()
 
